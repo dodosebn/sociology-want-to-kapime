@@ -12,10 +12,7 @@ const FormSurvey = () => {
   return (
     <div className="form-wrapper">
       <form className="form-container">
-        {/* <div className="form-header">
-          <h1>Career Preferences Survey</h1>
-          <p>Help us understand your professional needs and aspirations</p>
-        </div> */}
+     
 
         <div className="recaptcha-container">
           <ReCAPTCHA
@@ -25,7 +22,6 @@ const FormSurvey = () => {
         </div>
 
         <div className="form-section">
-          <h2>Personal Information</h2>
           <div>
             <label>1. What is your full name?</label>
             <input type="text" className="input-line" disabled={!isVerified} required />
@@ -93,7 +89,6 @@ const FormSurvey = () => {
         </div>
 
         <div className="form-section">
-          <h2>Communication & Benefits</h2>
           <div>
             <label>9. How do you prefer to communicate?</label>
             <div className={`checkbox-group ${!isVerified ? 'disabled' : ''}`}>
@@ -130,7 +125,6 @@ const FormSurvey = () => {
         </div>
 
         <div className="form-section">
-          <h2>Additional Information</h2>
           <div>
             <label>13. What is your expected salary range?</label>
             <input type="text" className="input-line" disabled={!isVerified} required />
