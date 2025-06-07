@@ -10,7 +10,7 @@ const FormSurvey = () => {
   };
 
   return (
-    <div className="form-wrapper">
+    // <div className="form-wrapper">
       <form className="form-container">
      
 
@@ -149,7 +149,7 @@ const FormSurvey = () => {
           Submit Survey
         </button>
       </form>
-    </div>
+    // </div>
   );
 };
 

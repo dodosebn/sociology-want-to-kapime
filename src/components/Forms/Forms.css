@@ -11,14 +11,15 @@ body {
 }
 
 .form-wrapper {
-  max-width: 900px; /* Increased width for better horizontal layout */
+  /* Increased width for better horizontal layout */
   margin: 2rem auto;
   padding: 0 1.5rem;
 }
 
 .form-container {
   background: white;
-  border-radius: 12px;
+      width: 100%;
+  /* border-radius: 12px; */
   padding: 3rem;
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
   display: flex;
@@ -49,27 +50,27 @@ label {
   display: block;
   font-weight: 500;
   margin-bottom: 0.6rem;
-  color: #444;
+  color: #333;
   font-size: 1rem;
   font-family: "Quattrocento Sans", sans-serif;
 }
 
 .input-line, select {
-  width: 100%;
-  padding: 0.85rem;
-  border: 1px solid #ddd;
-  border-radius: 8px;
-  font-size: 1rem;
-  background-color: white;
-  transition: all 0.3s;
-  box-sizing: border-box;
-  font-family: "Quattrocento Sans", sans-serif;
-}
+    background: transparent;
+    border: none;
+    border-bottom: 2px solid #ccc;
+    padding: 10px 5px;
+    font-size: 16px;
+    width: 100%;
+    outline: none;
+    transition: border-color 0.3s;
+  }
 
 .input-line:focus, select:focus {
   outline: none;
-  border-color: #FFF6E6;
-  box-shadow: 0 0 0 3px rgba(40, 8, 20, 0.2);
+  /* border-color: #FFF6E6; */
+      border-bottom: 2px solid #ff6ea2;
+  /* box-shadow: 0 0 0 3px rgba(40, 8, 20, 0.2); */
 }
 
 .checkbox-group {
@@ -117,12 +118,12 @@ label {
   padding: 1.1rem;
   border-radius: 8px;
   font-size: 1.1rem;
-  font-weight: 600;
+  font-weight: bold;
   cursor: pointer;
   transition: all 0.3s;
   margin-top: 1.5rem;
   width: 100%;
-  font-family: "Quattrocento Sans", sans-serif;
+  /* font-family: "Quattrocento Sans", sans-serif; */
   letter-spacing: 0.5px;
 }
 
