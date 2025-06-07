@@ -1,0 +1,120 @@
+.navbar {
+    height: 700px;
+    background-image: url('/src//assets/images/bg-3.webp'); 
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    padding: 15px 50px;
+    width: 100%;
+    z-index: 1000;
+  }
+
+  .logo-and-nav{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding-top: 50px;
+    gap: 50px;
+  }
+
+  .logo-and-nav h1{
+    font-size: 60px;
+  }
+  .logo-and-nav h1 a{
+    text-decoration: none !important;
+    color: #000 !important;
+  }
+
+  .hamburger-icon {
+    margin-top: -40px;
+    cursor: pointer;
+    width: fit-content;
+  }
+  
+
+
+
+
+
+  /* MENU MODAL STYLE============= */
+
+
+  .menu-modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background: rgba(0, 0, 0, 0.7);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+  }
+  
+  .menu-modal-content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    background-image: url('/src//assets/images/bg-3.webp'); 
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    padding: 2rem;
+    width: 100%;
+    height: 100%;
+    position: relative;
+    box-sizing: border-box;
+  }
+
+  .menu-content-inner{
+    max-width: 1000px;
+    padding: 15px;
+  }
+
+  .menu-content-inner h2{
+    font-size: 40px;
+    text-transform: uppercase !important;
+    padding-bottom: 20px;
+  }
+  .menu-content-inner p{
+    font-size: 20px;
+  }
+  
+  .close-button {
+    position: absolute;
+    top: 1rem;
+    right: 1rem;
+    font-size: 2rem;
+    background: none;
+    border: none;
+    cursor: pointer;
+  }
+  
+  @media (max-width: 768px) {
+    .menu-content-inner h2{
+      font-size: 33px;
+    }
+    .logo-and-nav h1{
+      font-size: 33px !important;
+    }
+    .hamburger-icon {
+      margin-top: -30px;
+      cursor: pointer;
+      width: fit-content;
+      margin-right: 10px;
+      margin-left: -20px;
+    }
+  }
+  
+ 
+  @media (max-width: 400px) {
+    .menu-content-inner h2{
+      font-size: 28px;
+
+    }
+  }
+  
+ 

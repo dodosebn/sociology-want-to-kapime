@@ -1,0 +1,23 @@
+/* .category-details-page{
+
+} */
+
+
+.category-header{
+    display: flex;
+    max-width: 900px;
+    gap: 20px;
+    margin: auto;
+}
+
+.category-header-left h1{
+    text-wrap: nowrap;
+} 
+.category-header-left p{
+    text-wrap: nowrap;
+}
+
+.category-header-right {
+    border-left: 1px solid #000;
+    padding-left: 30px;
+}
