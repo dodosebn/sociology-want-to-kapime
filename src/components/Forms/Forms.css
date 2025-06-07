@@ -10,11 +10,10 @@ body {
   line-height: 1.6;
 }
 
-.form-wrapper {
-  /* Increased width for better horizontal layout */
+/* .form-wrapper {
   margin: 2rem auto;
   padding: 0 1.5rem;
-}
+} */
 
 .form-container {
   background: white;
