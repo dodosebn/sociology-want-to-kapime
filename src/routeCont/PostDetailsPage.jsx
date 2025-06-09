@@ -8,12 +8,54 @@ const PostDetailsPage = () => {
   const { id } = useParams();
   const item = postData.find(p => p.id === parseInt(id) && p.type === 'article');
   const [isTableOpen, setIsTableOpen] = useState(false);
-
+  const [isCopied, setIsCopied] = useState(false);
+  
   const section1Ref = useRef(null);
   const section2Ref = useRef(null);
+  const linkInputRef = useRef(null);
 
   const handleScrollToSection = (sectionRef) => {
     sectionRef.current.scrollIntoView({ behavior: 'smooth' });
+  };
+
+  // Get current page URL
+  const currentUrl = window.location.href;
+
+ const copyToClipboard = async () => {
+  if (linkInputRef.current) {
+    try {
+      await navigator.clipboard.writeText(linkInputRef.current.value);
+      setIsCopied(true);
+      setTimeout(() => setIsCopied(false), 2000);
+    } catch (err) {
+      console.error('Failed to copy text: ', err);
+    }
+  }
+};
+
+
+  const shareOnSocialMedia = (platform) => {
+    let shareUrl = '';
+    const title = item?.title || 'Check out this article';
+    
+    switch(platform) {
+      case 'facebook':
+        shareUrl = `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(currentUrl)}`;
+        break;
+      case 'twitter':
+        shareUrl = `https://twitter.com/intent/tweet?url=${encodeURIComponent(currentUrl)}&text=${encodeURIComponent(title)}`;
+        break;
+      case 'whatsapp':
+        shareUrl = `https://wa.me/?text=${encodeURIComponent(title + ' ' + currentUrl)}`;
+        break;
+      case 'email':
+        shareUrl = `mailto:?subject=${encodeURIComponent(title)}&body=${encodeURIComponent(currentUrl)}`;
+        break;
+      default:
+        return;
+    }
+    
+    window.open(shareUrl, '_blank');
   };
 
   if (!item) return <p>Post not found</p>;
@@ -56,9 +98,6 @@ const PostDetailsPage = () => {
           </div>
 
           <div className="post-paragraph">
-      
-
-
             <p ref={section1Ref}>
               Ghost comes with a beautiful default theme called Casper, which is designed to be a clean, readable publication 
               layout and can be adapted for most purposes. However, Ghost can also be completely themed to suit your needs. 
@@ -110,33 +149,56 @@ const PostDetailsPage = () => {
                 </li>
               </ul>
             </div>
-
-
            </div>
           </div>
 
-{/* ----------footer------------ */}
-            <div className="page-footer-section">
-              <h3>Share Article:</h3>
-              <div className="social-icons">
-                <button className="icon facebook">f</button>
-                <button className="icon twitter">x</button>
-                <button className="icon whatsapp">w</button>
-                <button className="icon email">e</button>
-              </div>
-
-              <div className="link-copy-section">
-                <input 
-                  type="text" 
-                  value="https://ghost.estudiopatagon.com/edger/nosidebar/" 
-                  readOnly 
-                />
-                <button className="copy-button">Copy Link</button>
-              </div>
-
-              <hr />
+          {/* ----------footer------------ */}
+          <div className="page-footer-section">
+            <h3>Share Article:</h3>
+            <div className="social-icons">
+              <button 
+                className="icon facebook" 
+                onClick={() => shareOnSocialMedia('facebook')}
+              >
+                f
+              </button>
+              <button 
+                className="icon twitter" 
+                onClick={() => shareOnSocialMedia('twitter')}
+              >
+                x
+              </button>
+              <button 
+                className="icon whatsapp" 
+                onClick={() => shareOnSocialMedia('whatsapp')}
+              >
+                w
+              </button>
+              <button 
+                className="icon email" 
+                onClick={() => shareOnSocialMedia('email')}
+              >
+                e
+              </button>
             </div>
 
+            <div className="link-copy-section">
+              <input 
+                type="text" 
+                ref={linkInputRef}
+                value={currentUrl} 
+                readOnly 
+              />
+              <button 
+                className="copy-button" 
+                onClick={copyToClipboard}
+              >
+                {isCopied ? 'Copied!' : 'Copy Link'}
+              </button>
+            </div>
+
+            <hr />
+          </div>
         </div>
       </div>
     </div>

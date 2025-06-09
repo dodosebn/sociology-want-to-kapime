@@ -303,7 +303,7 @@ const FormSurvey = () => {
       />
       
       <form className="form-container" onSubmit={handleSubmit} ref={formRef}>
-        {/* Question 1 */}
+        {/* quest onenoo*/}
         <label>1. Which of these best describe you? (Select all that apply)</label>
         <div className="checkbox-group">
           <label><input type="checkbox" name="q1-A" onChange={handleChange} checked={formData.q1.includes('A')} /> Student</label>

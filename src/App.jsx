@@ -21,7 +21,6 @@ import Forms from './routeCont/Forms';
 import Articles from './routeCont/Articles';
 import CustomButton from './containers/button/CustomButton';
 
-// Wrapper to add Navbar above pages (for public pages)
 const PageWithNavbar = ({ children }) => (
   <>
     <Navbar isSidebarVisible={false} />

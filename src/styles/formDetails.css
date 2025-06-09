@@ -247,3 +247,11 @@
     padding: 10px 20px;
   }
 }
+ .copy-button {
+  transition: background-color 0.3s ease;
+}
+
+.copy-button.copied {
+  background-color: #4CAF50;
+  color: white;
+}
