@@ -1,33 +1,30 @@
-import React, { useState, useEffect, Suspense } from 'react';
-import { Routes, Route, useLocation } from 'react-router-dom';
+import { useState, useEffect } from 'react';
+import { BrowserRouter as Router, Routes, Route, useLocation } from 'react-router-dom';
 import { FaArrowUp } from 'react-icons/fa';
-import LoadingSignal from './loadingSignal';
-import LazyLoad from './lazyLoad';
 
-const Home = LazyLoad('Home');
-const NotFoundError = LazyLoad('NotFoundError');
-const Navbar = LazyLoad('Navbar');
-const SignUp = LazyLoad('SignUp');
-const SignIn = LazyLoad('SignIn');
-const Dashboard = LazyLoad('Dashboard');
-const Profile = LazyLoad('Profile');
-const Submissions = LazyLoad('Submissions');
-const Messages = LazyLoad('Messages');
-const Users = LazyLoad('Users');
-const Footer = LazyLoad('Footer');
-const FormDetailsPage = LazyLoad('FormDetailsPage');
-const PostDetailsPage = LazyLoad('PostDetailsPage');
-const DashboardLayout = LazyLoad('DashboardLayout');
-const Forms = LazyLoad('Forms');
-const Articles = LazyLoad('Articles');
-const CustomButton = LazyLoad('CustomButton');
+// Pages and components
+import Home from './routeCont/Home';
+import NotFoundError from './routeCont/NotFoundError';
+import Navbar from './components/navbar/Navbar';
+import SignUp from './routeCont/SignUp';
+import SignIn from './routeCont/SignIn';
+import Dashboard from './routeCont/dashbaord/Dashboard';
+import Profile from './routeCont/dashbaord/Profile';
+import Submissions from './routeCont/dashbaord/Submissions';
+import Messages from './routeCont/dashbaord/Messages';
+import Users from './routeCont/dashbaord/Users';
+import Footer from './components/footer/Footer';
+import FormDetailsPage from './routeCont/FormDetailsPage';
+import PostDetailsPage from './routeCont/PostDetailsPage';
+import DashboardLayout from './containers/DashboardLayout';
+import Forms from './routeCont/Forms';
+import Articles from './routeCont/Articles';
+import CustomButton from './containers/button/CustomButton';
 
-// Wrapper to add Navbar to pages
+// Wrapper to add Navbar above pages (for public pages)
 const PageWithNavbar = ({ children }) => (
   <>
-    <Suspense fallback={<LoadingSignal componentName="navbar" />}>
-      <Navbar isSidebarVisible={false} />
-    </Suspense>
+    <Navbar isSidebarVisible={false} />
     {children}
   </>
 );
@@ -42,7 +39,7 @@ function ScrollToTopOnRouteChange() {
 }
 
 // Scroll-to-top button component
- const ScrollTopTopBtn = () =>  {
+function ScrollToTopButton() {
   const [visible, setVisible] = useState(false);
 
   useEffect(() => {
@@ -54,21 +51,19 @@ function ScrollToTopOnRouteChange() {
   if (!visible) return null;
 
   return (
-    <Suspense fallback={null}>
-      <CustomButton
-        title=""
-        icon={<FaArrowUp size={18} />}
-        backgroundColor="#FFD682"
-        textColor="#000"
-        className="scroll-to-top"
-        onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
-        aria-label="Scroll to top"
-      />
-    </Suspense>
+    <CustomButton
+      title=""
+      icon={<FaArrowUp size={18} />}
+      backgroundColor="#FFD682"
+      textColor="#000"
+      className="scroll-to-top"
+      onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
+      aria-label="Scroll to top"
+    />
   );
 }
 
-const AppContent = () => {
+function AppContent() {
   const location = useLocation();
 
   // Check if current path is dashboard-related (to hide footer)
@@ -82,114 +77,36 @@ const AppContent = () => {
 
       <Routes>
         {/* Public routes */}
-        <Route path="/" element={
-          <PageWithNavbar>
-            <Suspense fallback={<LoadingSignal componentName="home page" />}>
-              <Home />
-            </Suspense>
-          </PageWithNavbar>
-        } />
-        <Route path="/forms" element={
-          <PageWithNavbar>
-            <Suspense fallback={<LoadingSignal componentName="forms" />}>
-              <Forms />
-            </Suspense>
-          </PageWithNavbar>
-        } />
-        <Route path="/articles" element={
-          <PageWithNavbar>
-            <Suspense fallback={<LoadingSignal componentName="articles" />}>
-              <Articles />
-            </Suspense>
-          </PageWithNavbar>
-        } />
-        <Route path="/sign-in" element={
-          <Suspense fallback={<LoadingSignal componentName="sign in" />}>
-            <SignIn />
-          </Suspense>
-        } />
-        <Route path="/sign-up" element={
-          <Suspense fallback={<LoadingSignal componentName="sign up" />}>
-            <SignUp />
-          </Suspense>
-        } />
-        <Route path="/post-details/:id/:slug" element={
-          <PageWithNavbar>
-            <Suspense fallback={<LoadingSignal componentName="post details" />}>
-              <PostDetailsPage />
-            </Suspense>
-          </PageWithNavbar>
-        } />
-        <Route path="/form-details/:id/:slug" element={
-          <PageWithNavbar>
-            <Suspense fallback={<LoadingSignal componentName="form details" />}>
-              <FormDetailsPage />
-            </Suspense>
-          </PageWithNavbar>
-        } />
+        <Route path="/" element={<PageWithNavbar><Home /></PageWithNavbar>} />
+        <Route path="/forms" element={<PageWithNavbar><Forms /></PageWithNavbar>} />
+        <Route path="/articles" element={<PageWithNavbar><Articles /></PageWithNavbar>} />
+        <Route path="/sign-in" element={<SignIn />} />
+        <Route path="/sign-up" element={<SignUp />} />
+        <Route path="/post-details/:id/:slug" element={<PageWithNavbar><PostDetailsPage /></PageWithNavbar>} />
+        <Route path="/form-details/:id/:slug" element={<PageWithNavbar><FormDetailsPage /></PageWithNavbar>} />
 
         {/* Dashboard routes */}
-        <Route path="/dashboard" element={
-          <Suspense fallback={<LoadingSignal componentName="dashboard" />}>
-            <DashboardLayout>
-              <Suspense fallback={<LoadingSignal componentName="dashboard content" />}>
-                <Dashboard />
-              </Suspense>
-            </DashboardLayout>
-          </Suspense>
-        } />
-        <Route path="/profile" element={
-          <Suspense fallback={<LoadingSignal componentName="dashboard" />}>
-            <DashboardLayout>
-              <Suspense fallback={<LoadingSignal componentName="profile" />}>
-                <Profile />
-              </Suspense>
-            </DashboardLayout>
-          </Suspense>
-        } />
-        <Route path="/submissions" element={
-          <Suspense fallback={<LoadingSignal componentName="dashboard" />}>
-            <DashboardLayout>
-              <Suspense fallback={<LoadingSignal componentName="submissions" />}>
-                <Submissions />
-              </Suspense>
-            </DashboardLayout>
-          </Suspense>
-        } />
-        <Route path="/messages" element={
-          <Suspense fallback={<LoadingSignal componentName="dashboard" />}>
-            <DashboardLayout>
-              <Suspense fallback={<LoadingSignal componentName="messages" />}>
-                <Messages />
-              </Suspense>
-            </DashboardLayout>
-          </Suspense>
-        } />
-        <Route path="/users" element={
-          <Suspense fallback={<LoadingSignal componentName="dashboard" />}>
-            <DashboardLayout>
-              <Suspense fallback={<LoadingSignal componentName="users" />}>
-                <Users />
-              </Suspense>
-            </DashboardLayout>
-          </Suspense>
-        } />
+        <Route path="/dashboard" element={<DashboardLayout><Dashboard /></DashboardLayout>} />
+        <Route path="/profile" element={<DashboardLayout><Profile /></DashboardLayout>} />
+        <Route path="/submissions" element={<DashboardLayout><Submissions /></DashboardLayout>} />
+        <Route path="/messages" element={<DashboardLayout><Messages /></DashboardLayout>} />
+        <Route path="/users" element={<DashboardLayout><Users /></DashboardLayout>} />
 
         {/* 404 */}
-        <Route path="*" element={
-          <Suspense fallback={<LoadingSignal componentName="page" />}>
-            <NotFoundError />
-          </Suspense>
-        } />
+        <Route path="*" element={<NotFoundError />} />
       </Routes>
 
       {/* Footer shown only on non-dashboard routes */}
-      {!isDashboardRoute && (
-        <Suspense fallback={null}>
-          <Footer />
-        </Suspense>
-      )}
+      {!isDashboardRoute && <Footer />}
     </>
   );
 }
-export {AppContent, ScrollTopTopBtn };
+
+export default function App() {
+  return (
+    <Router>
+      <AppContent />
+      <ScrollToTopButton />
+    </Router>
+  );
+}
