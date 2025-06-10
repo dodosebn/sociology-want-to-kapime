@@ -1,25 +1,30 @@
-import React, { useRef, useState } from 'react';
+import React, { useRef, useState, useMemo, lazy, Suspense } from 'react';
 import { useParams } from 'react-router-dom';
 import postData from '../../src/data/postdata';
-import FormOne from "../components/Forms/FormOne";
 import '../styles/formDetails.css';
 import { BiChevronDown } from 'react-icons/bi';
 
+// Lazy-load FormOne for performance
+const FormOne = lazy(() => import("../components/Forms/FormOne"));
+
 const FormDetailsPage = () => {
   const { id } = useParams();
-  const item = postData.find(p => p.id === parseInt(id) && p.type === 'form');
+
+  const item = useMemo(() => {
+    return postData.find(p => p.id === parseInt(id) && p.type === 'form');
+  }, [id]);
+
   const [isCopied, setIsCopied] = useState(false);
   const [isTableOpen, setIsTableOpen] = useState(false);
-  
+
   const section1Ref = useRef(null);
   const section2Ref = useRef(null);
   const linkInputRef = useRef(null);
-  
-  // Get current URL
+
   const currentUrl = window.location.href;
 
   const handleScrollToSection = (sectionRef) => {
-    sectionRef.current.scrollIntoView({ behavior: 'smooth' });
+    sectionRef.current?.scrollIntoView({ behavior: 'smooth' });
   };
 
   const copyToClipboard = async () => {
@@ -37,8 +42,8 @@ const FormDetailsPage = () => {
   const shareOnSocialMedia = (platform) => {
     let shareUrl = '';
     const title = item?.title || 'Check out this form';
-    
-    switch(platform) {
+
+    switch (platform) {
       case 'facebook':
         shareUrl = `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(currentUrl)}`;
         break;
@@ -54,7 +59,7 @@ const FormDetailsPage = () => {
       default:
         return;
     }
-    
+
     window.open(shareUrl, '_blank');
   };
 
@@ -67,7 +72,12 @@ const FormDetailsPage = () => {
           <header className='form-header'>
             <div className="form-hero-section-container">
               <div className="form-hero-box">
-                <img src={item.image} alt="header" className="form-hero-image" />
+                <img
+                  src={item.image}
+                  alt="header"
+                  className="form-hero-image"
+                  loading="lazy"
+                />
               </div>
             </div>
             <div className="form-header-info">
@@ -82,12 +92,12 @@ const FormDetailsPage = () => {
               <div className="dateAndTime">
                 <p>Apr 26, 2019</p>
                 <div className='autoInfo'>
-                  <img src={item.image} alt="author" />
+                  <img src={item.image} alt="author" loading="lazy" />
                   <p>Auth name here</p>
                 </div>
               </div>
 
-              <div 
+              <div
                 className={`table-of-contents ${isTableOpen ? 'open' : ''}`}
                 onClick={() => setIsTableOpen(!isTableOpen)}
               >
@@ -113,33 +123,35 @@ const FormDetailsPage = () => {
                 </p>
 
                 <div className="form-sample-container">
-                  <FormOne/>
+                  <Suspense fallback={<div>Loading form...</div>}>
+                    <FormOne />
+                  </Suspense>
                 </div>
               </div>
 
               <div className="page-footer-section">
                 <h3>Share Article:</h3>
                 <div className="social-icons">
-                  <button 
-                    className="icon facebook" 
+                  <button
+                    className="icon facebook"
                     onClick={() => shareOnSocialMedia('facebook')}
                   >
                     f
                   </button>
-                  <button 
-                    className="icon twitter" 
+                  <button
+                    className="icon twitter"
                     onClick={() => shareOnSocialMedia('twitter')}
                   >
                     x
                   </button>
-                  <button 
-                    className="icon whatsapp" 
+                  <button
+                    className="icon whatsapp"
                     onClick={() => shareOnSocialMedia('whatsapp')}
                   >
                     w
                   </button>
-                  <button 
-                    className="icon email" 
+                  <button
+                    className="icon email"
                     onClick={() => shareOnSocialMedia('email')}
                   >
                     e
@@ -147,14 +159,14 @@ const FormDetailsPage = () => {
                 </div>
 
                 <div className="link-copy-section">
-                  <input 
-                    type="text" 
-                    value={currentUrl} 
-                    readOnly 
+                  <input
+                    type="text"
+                    value={currentUrl}
+                    readOnly
                     ref={linkInputRef}
                   />
-                  <button 
-                    className="copy-button" 
+                  <button
+                    className="copy-button"
                     onClick={copyToClipboard}
                   >
                     {isCopied ? 'Copied!' : 'Copy Link'}

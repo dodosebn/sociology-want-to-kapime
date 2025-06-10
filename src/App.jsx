@@ -69,8 +69,6 @@ function ScrollToTopButton() {
 
 function AppContent() {
   const location = useLocation();
-
-  // Determine if we're in a dashboard route (for hiding footer)
   const isDashboardRoute = location.pathname.startsWith('/dashboard');
 
   return (
@@ -84,10 +82,18 @@ function AppContent() {
         <Route path="/articles" element={<PageWithNavbar><Articles /></PageWithNavbar>} />
         <Route path="/sign-in" element={<SignIn />} />
         <Route path="/sign-up" element={<SignUp />} />
-        <Route path="/post-details/:id/:slug" element={<PageWithNavbar><PostDetailsPage /></PageWithNavbar>} />
-        <Route path="/form-details/:id/:slug" element={<PageWithNavbar><FormDetailsPage /></PageWithNavbar>} />
+        <Route path="/post-details/:id/:slug" element={
+          <PageWithNavbar>
+            <PostDetailsPage key={location.pathname} />
+          </PageWithNavbar>
+        } />
+        <Route path="/form-details/:id/:slug" element={
+          <PageWithNavbar>
+            <FormDetailsPage key={location.pathname} />
+          </PageWithNavbar>
+        } />
 
-        {/* Dashboard routes with nested routing */}
+        {/* Dashboard routes */}
         <Route path="/dashboard" element={<MemoizedDashboardLayout />}>
           <Route index element={<Dashboard />} />
           <Route path="profile" element={<Profile />} />
@@ -100,11 +106,11 @@ function AppContent() {
         <Route path="*" element={<NotFoundError />} />
       </Routes>
 
-      {/* Footer only for non-dashboard routes */}
       {!isDashboardRoute && <Footer />}
     </>
   );
 }
+
 
 export default function App() {
   return (
