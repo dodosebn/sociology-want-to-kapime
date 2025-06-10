@@ -1,5 +1,5 @@
-import { useState, useEffect } from 'react';
-import { BrowserRouter as Router, Routes, Route, useLocation } from 'react-router-dom';
+import { useState, useEffect, Suspense, memo } from 'react';
+import { BrowserRouter as Router, Routes, Route, useLocation, Outlet } from 'react-router-dom';
 import { FaArrowUp } from 'react-icons/fa';
 
 // Pages and components
@@ -16,15 +16,19 @@ import Users from './routeCont/dashbaord/Users';
 import Footer from './components/footer/Footer';
 import FormDetailsPage from './routeCont/FormDetailsPage';
 import PostDetailsPage from './routeCont/PostDetailsPage';
-import DashboardLayout from './containers/DashboardLayout';
 import Forms from './routeCont/Forms';
 import Articles from './routeCont/Articles';
 import CustomButton from './containers/button/CustomButton';
+import DashboardLayout from './containers/DashboardLayout'; // This file needs an <Outlet /> inside
 
-// Wrapper to add Navbar above pages (for public pages)
+// Memoized layout components to prevent unnecessary re-renders
+const MemoizedNavbar = memo(Navbar);
+const MemoizedDashboardLayout = memo(DashboardLayout);
+
+// Wrapper to add Navbar above public pages
 const PageWithNavbar = ({ children }) => (
   <>
-    <Navbar isSidebarVisible={false} />
+    <MemoizedNavbar isSidebarVisible={false} />
     {children}
   </>
 );
@@ -66,10 +70,8 @@ function ScrollToTopButton() {
 function AppContent() {
   const location = useLocation();
 
-  // Check if current path is dashboard-related (to hide footer)
-  const isDashboardRoute = ['/dashboard', '/profile', '/submissions', '/messages', '/users'].some(path =>
-    location.pathname.startsWith(path)
-  );
+  // Determine if we're in a dashboard route (for hiding footer)
+  const isDashboardRoute = location.pathname.startsWith('/dashboard');
 
   return (
     <>
@@ -85,18 +87,20 @@ function AppContent() {
         <Route path="/post-details/:id/:slug" element={<PageWithNavbar><PostDetailsPage /></PageWithNavbar>} />
         <Route path="/form-details/:id/:slug" element={<PageWithNavbar><FormDetailsPage /></PageWithNavbar>} />
 
-        {/* Dashboard routes */}
-        <Route path="/dashboard" element={<DashboardLayout><Dashboard /></DashboardLayout>} />
-        <Route path="/profile" element={<DashboardLayout><Profile /></DashboardLayout>} />
-        <Route path="/submissions" element={<DashboardLayout><Submissions /></DashboardLayout>} />
-        <Route path="/messages" element={<DashboardLayout><Messages /></DashboardLayout>} />
-        <Route path="/users" element={<DashboardLayout><Users /></DashboardLayout>} />
+        {/* Dashboard routes with nested routing */}
+        <Route path="/dashboard" element={<MemoizedDashboardLayout />}>
+          <Route index element={<Dashboard />} />
+          <Route path="profile" element={<Profile />} />
+          <Route path="submissions" element={<Submissions />} />
+          <Route path="messages" element={<Messages />} />
+          <Route path="users" element={<Users />} />
+        </Route>
 
-        {/* 404 */}
+        {/* 404 Page */}
         <Route path="*" element={<NotFoundError />} />
       </Routes>
 
-      {/* Footer shown only on non-dashboard routes */}
+      {/* Footer only for non-dashboard routes */}
       {!isDashboardRoute && <Footer />}
     </>
   );
