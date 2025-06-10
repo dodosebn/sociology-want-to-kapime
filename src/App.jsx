@@ -1,29 +1,67 @@
-import { useState, useEffect } from 'react';
+import React, { useState, useEffect, lazy, Suspense } from 'react';
 import { BrowserRouter as Router, Routes, Route, useLocation } from 'react-router-dom';
 import { FaArrowUp } from 'react-icons/fa';
 
-// Pages and components
-import Home from './routeCont/Home';
-import NotFoundError from './routeCont/NotFoundError';
-import Navbar from './components/navbar/Navbar';
-import SignUp from './routeCont/SignUp';
-import SignIn from './routeCont/SignIn';
-import Dashboard from './routeCont/dashbaord/Dashboard';
-import Profile from './routeCont/dashbaord/Profile';
-import Submissions from './routeCont/dashbaord/Submissions';
-import Messages from './routeCont/dashbaord/Messages';
-import Users from './routeCont/dashbaord/Users';
-import Footer from './components/footer/Footer';
-import FormDetailsPage from './routeCont/FormDetailsPage';
-import PostDetailsPage from './routeCont/PostDetailsPage';
-import DashboardLayout from './containers/DashboardLayout';
-import Forms from './routeCont/Forms';
-import Articles from './routeCont/Articles';
-import CustomButton from './containers/button/CustomButton';
+// Static import map for lazy loading
+const componentMap = {
+  Home: () => import('./routeCont/Home'),
+  NotFoundError: () => import('./routeCont/NotFoundError'),
+  Navbar: () => import('./components/navbar/Navbar'),
+  SignUp: () => import('./routeCont/SignUp'),
+  SignIn: () => import('./routeCont/SignIn'),
+  Dashboard: () => import('./routeCont/dashbaord/Dashboard'),
+  Profile: () => import('./routeCont/dashbaord/Profile'),
+  Submissions: () => import('./routeCont/dashbaord/Submissions'),
+  Messages: () => import('./routeCont/dashbaord/Messages'),
+  Users: () => import('./routeCont/dashbaord/Users'),
+  Footer: () => import('./components/footer/Footer'),
+  FormDetailsPage: () => import('./routeCont/FormDetailsPage'),
+  PostDetailsPage: () => import('./routeCont/PostDetailsPage'),
+  DashboardLayout: () => import('./containers/DashboardLayout'),
+  Forms: () => import('./routeCont/Forms'),
+  Articles: () => import('./routeCont/Articles'),
+  CustomButton: () => import('./containers/button/CustomButton'),
+};
 
+// LazyLoad function using static map
+const LazyLoad = (key, namedExport = null) => {
+  const importer = componentMap[key];
+  if (!importer) throw new Error(`Component "${key}" not found in componentMap`);
+
+  return lazy(() =>
+    importer().then((module) =>
+      namedExport === null
+        ? { default: module.default }
+        : { default: module[namedExport] }
+    )
+  );
+};
+
+// Lazy loaded components
+const Home = LazyLoad('Home');
+const NotFoundError = LazyLoad('NotFoundError');
+const Navbar = LazyLoad('Navbar');
+const SignUp = LazyLoad('SignUp');
+const SignIn = LazyLoad('SignIn');
+const Dashboard = LazyLoad('Dashboard');
+const Profile = LazyLoad('Profile');
+const Submissions = LazyLoad('Submissions');
+const Messages = LazyLoad('Messages');
+const Users = LazyLoad('Users');
+const Footer = LazyLoad('Footer');
+const FormDetailsPage = LazyLoad('FormDetailsPage');
+const PostDetailsPage = LazyLoad('PostDetailsPage');
+const DashboardLayout = LazyLoad('DashboardLayout');
+const Forms = LazyLoad('Forms');
+const Articles = LazyLoad('Articles');
+const CustomButton = LazyLoad('CustomButton');
+
+// Wrapper to add Navbar to pages
 const PageWithNavbar = ({ children }) => (
   <>
-    <Navbar isSidebarVisible={false} />
+    <Suspense fallback={<div>Loading navbar...</div>}>
+      <Navbar isSidebarVisible={false} />
+    </Suspense>
     {children}
   </>
 );
@@ -50,15 +88,17 @@ function ScrollToTopButton() {
   if (!visible) return null;
 
   return (
-    <CustomButton
-      title=""
-      icon={<FaArrowUp size={18} />}
-      backgroundColor="#FFD682"
-      textColor="#000"
-      className="scroll-to-top"
-      onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
-      aria-label="Scroll to top"
-    />
+    <Suspense fallback={null}>
+      <CustomButton
+        title=""
+        icon={<FaArrowUp size={18} />}
+        backgroundColor="#FFD682"
+        textColor="#000"
+        className="scroll-to-top"
+        onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
+        aria-label="Scroll to top"
+      />
+    </Suspense>
   );
 }
 
@@ -76,27 +116,113 @@ function AppContent() {
 
       <Routes>
         {/* Public routes */}
-        <Route path="/" element={<PageWithNavbar><Home /></PageWithNavbar>} />
-        <Route path="/forms" element={<PageWithNavbar><Forms /></PageWithNavbar>} />
-        <Route path="/articles" element={<PageWithNavbar><Articles /></PageWithNavbar>} />
-        <Route path="/sign-in" element={<SignIn />} />
-        <Route path="/sign-up" element={<SignUp />} />
-        <Route path="/post-details/:id/:slug" element={<PageWithNavbar><PostDetailsPage /></PageWithNavbar>} />
-        <Route path="/form-details/:id/:slug" element={<PageWithNavbar><FormDetailsPage /></PageWithNavbar>} />
+        <Route path="/" element={
+          <PageWithNavbar>
+            <Suspense fallback={<div>Loading home...</div>}>
+              <Home />
+            </Suspense>
+          </PageWithNavbar>
+        } />
+        <Route path="/forms" element={
+          <PageWithNavbar>
+            <Suspense fallback={<div>Loading forms...</div>}>
+              <Forms />
+            </Suspense>
+          </PageWithNavbar>
+        } />
+        <Route path="/articles" element={
+          <PageWithNavbar>
+            <Suspense fallback={<div>Loading articles...</div>}>
+              <Articles />
+            </Suspense>
+          </PageWithNavbar>
+        } />
+        <Route path="/sign-in" element={
+          <Suspense fallback={<div>Loading sign in...</div>}>
+            <SignIn />
+          </Suspense>
+        } />
+        <Route path="/sign-up" element={
+          <Suspense fallback={<div>Loading sign up...</div>}>
+            <SignUp />
+          </Suspense>
+        } />
+        <Route path="/post-details/:id/:slug" element={
+          <PageWithNavbar>
+            <Suspense fallback={<div>Loading post details...</div>}>
+              <PostDetailsPage />
+            </Suspense>
+          </PageWithNavbar>
+        } />
+        <Route path="/form-details/:id/:slug" element={
+          <PageWithNavbar>
+            <Suspense fallback={<div>Loading form details...</div>}>
+              <FormDetailsPage />
+            </Suspense>
+          </PageWithNavbar>
+        } />
 
         {/* Dashboard routes */}
-        <Route path="/dashboard" element={<DashboardLayout><Dashboard /></DashboardLayout>} />
-        <Route path="/profile" element={<DashboardLayout><Profile /></DashboardLayout>} />
-        <Route path="/submissions" element={<DashboardLayout><Submissions /></DashboardLayout>} />
-        <Route path="/messages" element={<DashboardLayout><Messages /></DashboardLayout>} />
-        <Route path="/users" element={<DashboardLayout><Users /></DashboardLayout>} />
+        <Route path="/dashboard" element={
+          <Suspense fallback={<div>Loading dashboard...</div>}>
+            <DashboardLayout>
+              <Suspense fallback={<div>Loading dashboard content...</div>}>
+                <Dashboard />
+              </Suspense>
+            </DashboardLayout>
+          </Suspense>
+        } />
+        <Route path="/profile" element={
+          <Suspense fallback={<div>Loading dashboard...</div>}>
+            <DashboardLayout>
+              <Suspense fallback={<div>Loading profile...</div>}>
+                <Profile />
+              </Suspense>
+            </DashboardLayout>
+          </Suspense>
+        } />
+        <Route path="/submissions" element={
+          <Suspense fallback={<div>Loading dashboard...</div>}>
+            <DashboardLayout>
+              <Suspense fallback={<div>Loading submissions...</div>}>
+                <Submissions />
+              </Suspense>
+            </DashboardLayout>
+          </Suspense>
+        } />
+        <Route path="/messages" element={
+          <Suspense fallback={<div>Loading dashboard...</div>}>
+            <DashboardLayout>
+              <Suspense fallback={<div>Loading messages...</div>}>
+                <Messages />
+              </Suspense>
+            </DashboardLayout>
+          </Suspense>
+        } />
+        <Route path="/users" element={
+          <Suspense fallback={<div>Loading dashboard...</div>}>
+            <DashboardLayout>
+              <Suspense fallback={<div>Loading users...</div>}>
+                <Users />
+              </Suspense>
+            </DashboardLayout>
+          </Suspense>
+        } />
 
         {/* 404 */}
-        <Route path="*" element={<NotFoundError />} />
+        <Route path="*" element={
+          <Suspense fallback={<div>Loading...</div>}>
+            <NotFoundError />
+          </Suspense>
+        } />
       </Routes>
 
       {/* Footer shown only on non-dashboard routes */}
-      {!isDashboardRoute && <Footer />}
+      {!isDashboardRoute && (
+        <Suspense fallback={null}>
+          <Footer />
+        </Suspense>
+      )}
     </>
   );
 }
